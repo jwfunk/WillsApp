@@ -5,6 +5,7 @@ import './App.css'
 import SimpleParallax from "simple-parallax-js";
 import { Marker,MapContainer, TileLayer, useMap, Popup } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
+import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 import data from './data.json'
 
 function App() {
