@@ -2,50 +2,30 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import egret from '/LightRoom/EgretVertical.jpg'
 import SimpleParallax from "simple-parallax-js";
-import { Marker,MapContainer, TileLayer, useMap } from 'react-leaflet'
+import { Marker,MapContainer, TileLayer, useMap, Popup } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
+import data from './data.json'
 
 function App() {
+	console.log(data)
+	console.log(data.pictures)
   const [count, setCount] = useState(0)
-	  const position = [51.505, -0.09]
+	  const position = [42.862112, -89.539215]
 
   return (
-    <>
-	  <div style={{width: "100%", height: "500px"}}>
-	<MapContainer style={{height: "100%"}}center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+	  <>
+	  <div style={{width: "100vw", height: "100vh"}}>
+	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={13} scrollWheelZoom={true}>
 	  <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-  <Marker position={[51.505, -0.09]}>
-  </Marker>
+	{data.pictures.map(a =>( <Marker position = {a.position}><Popup style={{width:"300px"}}><a href={a.picture}><img  style={{width:"300px"}} key={a.picture} src={a.picture} /></a></Popup></Marker>))}
 </MapContainer>
 	  </div>
-	  <SimpleParallax overflow>
-	  <img src={egret} style={{width: "100%"}}/>
-	  </SimpleParallax>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+	  <div>
+	  </div>
+	  </>
   )
 }
 
