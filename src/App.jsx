@@ -10,6 +10,8 @@ import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json';
+import { FileUploader } from '@aws-amplify/ui-react-storage';
+import '@aws-amplify/ui-react/styles.css';
 function App() {
 	Amplify.configure(config);
 	console.log(data)
@@ -27,6 +29,12 @@ function App() {
                 </div>
             )}
         </Authenticator>
+	  <FileUploader
+      acceptedFileTypes={['image/*']}
+      path="public/"
+      maxFileCount={1}
+      isResumable
+    />
 	  <div style={{width: "100vw", height: "100vh"}}>
 	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={13} scrollWheelZoom={true}>
 	  <TileLayer
