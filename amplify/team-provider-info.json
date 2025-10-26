@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-willsapp-dev-c8a09-authRole",
+      "UnauthRoleArn": "arn:aws:iam::227421874691:role/amplify-willsapp-dev-c8a09-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::227421874691:role/amplify-willsapp-dev-c8a09-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-willsapp-dev-c8a09-deployment",
+      "UnauthRoleName": "amplify-willsapp-dev-c8a09-unauthRole",
+      "StackName": "amplify-willsapp-dev-c8a09",
+      "StackId": "arn:aws:cloudformation:us-east-2:227421874691:stack/amplify-willsapp-dev-c8a09/57c916c0-b28b-11f0-bf41-0a071e72977d",
+      "AmplifyAppId": "d1ag799xf666n5"
+    },
+    "categories": {
+      "auth": {
+        "willsappe1c8d524": {}
+      }
+    }
+  }
+}

@@ -7,11 +7,11 @@ import { Marker,MapContainer, TileLayer, useMap, Popup } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
 import data from './data.json';
 import { Amplify } from 'aws-amplify';
-import awsExports from './aws-exports';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-Amplify.configure({awsExports})
+import config from './amplifyconfiguration.json';
 function App() {
+	Amplify.configure(config);
 	console.log(data)
 	console.log(data.pictures)
   const [count, setCount] = useState(0)
