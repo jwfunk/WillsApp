@@ -1,5 +1,5 @@
 export const storage = defineStorage({
-  name: 'amplifyTeamDrive',
+  name: 'userImages',
   access: (allow) => ({
     'profile-pictures/{entity_id}/*': [
       allow.guest.to(['read']),
