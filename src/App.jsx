@@ -5,9 +5,12 @@ import './App.css'
 import SimpleParallax from "simple-parallax-js";
 import { Marker,MapContainer, TileLayer, useMap, Popup } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
-import markerIconPng from 'leaflet/dist/images/marker-icon.png';
-import data from './data.json'
-
+import data from './data.json';
+import { Amplify } from 'aws-amplify';
+import awsExports from './aws-exports';
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+Amplify.configure({awsExports})
 function App() {
 	console.log(data)
 	console.log(data.pictures)
@@ -16,6 +19,14 @@ function App() {
 
   return (
 	  <>
+	<Authenticator>
+            {({ signOut, user }) => (
+                <div>
+                    <p>Welcome {user.username}</p>
+                    <button onClick={signOut}>Sign out</button>
+                </div>
+            )}
+        </Authenticator>
 	  <div style={{width: "100vw", height: "100vh"}}>
 	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={13} scrollWheelZoom={true}>
 	  <TileLayer
