@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -44,8 +44,21 @@ function LocationMarker(user) {
     </Marker>
   )
 }
+function UserImages(user){
+	const [data, setData] = useState('');
+	useEffect(() => {
+	async function getData() {
+        const result = await list({path:'public'});
+	setData(result)
+	}
+	if(!data) {
+	getData()
+	}
+	},[]);
+	return <div>data</div>
+}
 function App() {
-
+	
 	Amplify.configure(config);
 	console.log(data)
 	console.log(data.pictures)
@@ -56,6 +69,7 @@ function App() {
 	<Authenticator>
             {({ signOut, user }) => (
                 <div>
+		    <UserImages {...user} />
                     <p>Welcome {user.username}</p>
                     <button onClick={signOut}>Sign out</button>
 	  <div style={{width: "100vw", height: "100vh"}}>
