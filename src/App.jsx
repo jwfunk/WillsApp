@@ -46,9 +46,10 @@ function LocationMarker(user) {
 }
 function UserImages(user){
 	const [data, setData] = useState('');
+	const path = 'public/' + user.username + '/'
 	useEffect(() => {
 	async function getData() {
-        const result = await list({path:'public'});
+        const result = await list({path: path});
 	setData(result)
 	}
 	if(!data) {
