@@ -5,12 +5,11 @@ import './App.css'
 import SimpleParallax from "simple-parallax-js";
 import { useMapEvents, Marker,MapContainer, TileLayer, useMap, Popup } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
-import data from './data.json';
 import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json';
-import { FileUploader } from '@aws-amplify/ui-react-storage';
+import { FileUploader ,StorageImage} from '@aws-amplify/ui-react-storage';
 import { list } from 'aws-amplify/storage';
 function OpenMarker({user,position}) {
 	const markerRef = useRef(null);
@@ -32,7 +31,7 @@ return (
       <Popup>
 	  <FileUploader
       acceptedFileTypes={['image/*']}
-      path={'public/' + user.username + '/'}
+      path={'public/' + user.username + '/' + position.lat + '/' + position.lng + '/'}
       maxFileCount={1}
       isResumable
       processFile={processFile}
@@ -53,25 +52,28 @@ function LocationMarker(user) {
     </OpenMarker>
   )
 }
+function UserPoint(user){
+	
+}
 function UserImages(user){
-	const [data, setData] = useState('');
+	const [data, setData] = useState(null);
 	const path = 'public/' + user.username + '/'
+	const url = 'https://willsapp9f2fe81319484cdd95064882e08262c2c8a09-dev.s3.us-east-2.amazonaws.com/'
 	useEffect(() => {
 	async function getData() {
         const result = await list({path: path});
+		console.log(result)
 	setData(result)
 	}
 	if(!data) {
 	getData()
 	}
 	},[]);
-	return <div>data</div>
+	return data === null ? null : (<div>{data.items.map(a => (<Marker position={[a.path.split('/')[2],a.path.split('/')[3]]}><Popup><div style={{width:"300px"}}><StorageImage path = {a.path} /></div></Popup></Marker>))}</div>)
 }
 function App() {
 	
 	Amplify.configure(config);
-	console.log(data)
-	console.log(data.pictures)
   const [count, setCount] = useState(0)
 	  const position = [42.862112, -89.539215]
   return (
@@ -79,7 +81,6 @@ function App() {
 	<Authenticator>
             {({ signOut, user }) => (
                 <div>
-		    <UserImages {...user} />
                     <p>Welcome {user.username}</p>
                     <button onClick={signOut}>Sign out</button>
 	  <div style={{width: "100vw", height: "100vh"}}>
@@ -88,7 +89,7 @@ function App() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 	  <LocationMarker {...user} />
-	{data.pictures.map(a =>( <Marker position = {a.position}><Popup style={{width:"300px"}}><a href={a.picture}><img  style={{width:"300px"}} key={a.picture} src={a.picture} /></a></Popup></Marker>))}
+		    <UserImages {...user}/>
 </MapContainer>
 	  </div>
                 </div>
