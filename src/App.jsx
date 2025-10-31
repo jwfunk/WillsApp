@@ -10,8 +10,9 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json';
 import { FileUploader ,StorageImage} from '@aws-amplify/ui-react-storage';
-import { list } from 'aws-amplify/storage';
+import { getUrl, list } from 'aws-amplify/storage';
 import {  useSearchParams } from "react-router-dom";
+
 function OpenMarker({user,position,setUpdate}) {
 	const markerRef = useRef(null);
 	const [upload,setUpload] = useState(null);
@@ -66,6 +67,16 @@ function LocationMarker({user,setUpdate}) {
     </OpenMarker>
   )
 }
+function Link({path}){
+	const [l, setL] = useState(null);
+	async function getLink(){
+	const link = await getUrl({path:path})
+	console.log(link.url)
+	setL(link.url.href)
+	}
+	getLink()
+	return (<a href = {l}><StorageImage path = {path} /></a>) 
+}
 function UserImages({user,update}){
 	const [data, setData] = useState(null);
 	const path = 'public/' + user.username + '/'
@@ -81,7 +92,7 @@ function UserImages({user,update}){
 	getData()
 	}
 	},[update]);
-	return data === null ? null : (<div>{data.items.map(a => (<Marker position={[a.path.split('/')[2],a.path.split('/')[3]]}><Popup><div style={{width:"300px"}}><StorageImage path = {a.path} /></div></Popup></Marker>))}</div>)
+	return data === null ? null : (<div>{data.items.map(a => (<Marker position={[a.path.split('/')[2],a.path.split('/')[3]]}><Popup><div style={{width:"300px"}}><Link path={a.path}/></div></Popup></Marker>))}</div>)
 }
 function App() {
 	const[update,setUpdate] = useState(null);	
