@@ -6,7 +6,7 @@ import SimpleParallax from "simple-parallax-js";
 import { useMapEvents, Marker,MapContainer, TileLayer, useMap, Popup } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
 import { Amplify } from 'aws-amplify';
-import { Authenticator } from '@aws-amplify/ui-react';
+import { Authenticator,Menu,MenuItem } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json';
 import { FileUploader ,StorageImage} from '@aws-amplify/ui-react-storage';
@@ -106,8 +106,11 @@ function App() {
 	<Authenticator>
             {({ signOut, user }) => (
                 <div>
-                    <p>Your link is {window.location.href}?user={user.username}</p>
-                    <button onClick={signOut}>Sign out</button>
+		    <Menu menuAlign="end" size="Large">
+		    <MenuItem><button onClick={signOut}>Sign out</button></MenuItem>
+		    <MenuItem><button onClick={() => {navigator.clipboard.writeText(window.location.href + '?user=' + user.username)}}>Copy Share Link</button></MenuItem>
+                    
+		    </Menu>
 	  <div style={{width: "100vw", height: "100vh"}}>
 	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={13} scrollWheelZoom={true}>
 	  <TileLayer
