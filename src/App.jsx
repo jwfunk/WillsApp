@@ -47,6 +47,9 @@ return (
       maxFileCount={1}
       isResumable
       processFile={processFile}
+      components={{FileList({files,onCancelUpload,onDeleteUpload}){
+	return (<div></div>)
+      }}}
     />
 	  </Popup>
 	</Marker>)}
