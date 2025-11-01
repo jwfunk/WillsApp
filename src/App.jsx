@@ -97,12 +97,40 @@ function UserImages({user,update}){
 	},[update]);
 	return data === null ? null : (<div>{data.items.map(a => (<Marker position={[a.path.split('/')[2],a.path.split('/')[3]]}><Popup><div style={{width:"300px"}}><Link path={a.path}/></div></Popup></Marker>))}</div>)
 }
+import axios from "axios";
+const Center = () => {
+  const [position, setPosition] = useState({
+    lat: 42.,
+    lng: -90,
+  });
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setPosition({ lat: coords.latitude, lng: coords.longitude });
+      },
+      (blocked) => {
+        if (blocked) {
+          const fetch = async () => {
+            try {
+              const { data } = await axios.get("https://ipapi.co/json");
+              setPosition({ lat: data.latitude, lng: data.longitude });
+            } catch (err) {
+              console.error(err);
+            }
+          };
+          fetch();
+        }
+      }
+    );
+  }, []);
+  return { position };
+};
 function App() {
 	const[update,setUpdate] = useState(null);	
 	const [searchParams, setSearchParams] = useSearchParams();
 	Amplify.configure(config);
   const [count, setCount] = useState(0)
-	  const position = [42.862112, -89.539215]
+	const { position } = Center();
 	if(searchParams.get("user") == null){
   return (
 	  <>
@@ -115,7 +143,7 @@ function App() {
                     
 		    </Menu>
 	  <div style={{width: "100vw", height: "100vh"}}>
-	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={13} scrollWheelZoom={true}>
+	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={5} scrollWheelZoom={true}>
 	  <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
