@@ -70,7 +70,7 @@ function LocationMarker({user,setUpdate}) {
     </OpenMarker>
   )
 }
-function Link({path,u}){
+function Link({path,u,setUpdate}){
 	const [l, setL] = useState(null);
 	async function getLink(){
 	const link = await getUrl({path:path})
@@ -81,17 +81,17 @@ function Link({path,u}){
 	if(u){
 	return (<>
 		<a href = {l}><StorageImage path = {path} /></a>
-		<button onClick={() => {Remove(path)}}>Remove</button>
+		<button onClick={() => {Remove(path,setUpdate)}}>Remove</button>
 		</>) 
 	}
 	else{
 	return (<a href = {l}><StorageImage path = {path} /></a>) 
 }}
-async function Remove(path){
+async function Remove(path,setUpdate){
 	await remove({path: path})
-	console.log("removed " + path)
+	setUpdate("removed " + path)
 }
-function UserImages({user,update,setBounds}){
+function UserImages({user,update,setBounds,setUpdate}){
 	const [data, setData] = useState(null);
 	const path = 'public/' + user.username + '/'
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -127,7 +127,7 @@ function UserImages({user,update,setBounds}){
 	getData()
 	}
 	},[update]);
-	return data === null ? null : (<div>{data.items.map(a => (<Marker position={[a.path.split('/')[2],a.path.split('/')[3]]}><Popup><div style={{width:"300px"}}><Link path={a.path} u = {(searchParams.get("user") == null)}/></div></Popup></Marker>))}</div>)
+	return data === null ? null : (<div>{data.items.map(a => (<Marker position={[a.path.split('/')[2],a.path.split('/')[3]]}><Popup><div style={{width:"300px"}}><Link path={a.path} u = {(searchParams.get("user") == null)} setUpdate={setUpdate}/></div></Popup></Marker>))}</div>)
 }
 import axios from "axios";
 
@@ -159,7 +159,7 @@ function App() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 	  <LocationMarker user = {user} setUpdate={setUpdate}/>
-		    <UserImages user = {user} update={update} setBounds={setBounds}/>
+		    <UserImages user = {user} update={update} setBounds={setBounds} setUpdate={setUpdate}/>
 </MapContainer>
 	  </div>
                 </div>
@@ -176,8 +176,7 @@ function App() {
 	  <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-	  <LocationMarker user = {user} setUpdate={setUpdate}/>
-		    <UserImages user = {user} update={update} setBounds={setBounds}/>
+		    <UserImages user = {user} update={update} setBounds={setBounds} setUpdate={setUpdate}/>
 </MapContainer>
 	  </div>
                 </div>

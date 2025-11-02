@@ -17,6 +17,9 @@
       },
       "storage": {
         "media": {}
+      },
+      "api": {
+        "willsapp": {}
       }
     }
   }
