@@ -91,7 +91,7 @@ async function Remove(path){
 	await remove({path: path})
 	console.log("removed " + path)
 }
-function UserImages({user,update}){
+function UserImages({user,update,setBounds}){
 	const [data, setData] = useState(null);
 	const path = 'public/' + user.username + '/'
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -100,7 +100,29 @@ function UserImages({user,update}){
 	async function getData() {
         const result = await list({path: (searchParams.get("user") === null ? path : 'public/' + searchParams.get("user") + '/')});
 		console.log(result)
-	setData(result)
+		if(!data){
+			var top = result.items[0].path.split('/')[2];
+			var bot = result.items[0].path.split('/')[2];
+			var r = result.items[0].path.split('/')[3];
+			var l  = result.items[0].path.split('/')[3];
+			console.log(result.items)
+			for(let i = 1;i < result.items.length; i++){
+				if(result.items[i].path.split('/')[2] > top){
+					top = result.items[i].path.split('/')[2]
+				}
+				if(result.items[i].path.split('/')[2] < bot){
+					bot = result.items[i].path.split('/')[2]
+				}
+				if(result.items[i].path.split('/')[3] > r){
+					r = result.items[i].path.split('/')[3]
+				}
+				if(result.items[i].path.split('/')[3] < l){
+					l = result.items[i].path.split('/')[3]
+				}
+			}
+				setBounds([[top,r],[bot,l]])
+		}
+	        setData(result)
 	}
 	if(!data || update != null) {
 	getData()
@@ -137,11 +159,13 @@ const Center = () => {
   return { position };
 };
 function App() {
+	const [map,setMap] = useState(null)
+	const [bounds,setBounds] = useState(null)
 	const[update,setUpdate] = useState(null);	
 	const [searchParams, setSearchParams] = useSearchParams();
 	Amplify.configure(config);
-  const [count, setCount] = useState(0)
 	const { position } = Center();
+	useEffect(() => {if(map != null){map.fitBounds(bounds)}},[bounds])
 	if(searchParams.get("user") == null){
   return (
 	  <>
@@ -154,12 +178,12 @@ function App() {
                     
 		    </Menu>
 	  <div style={{width: "100vw", height: "100vh"}}>
-	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={5} scrollWheelZoom={true}>
+	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={5} scrollWheelZoom={true} ref={setMap}>
 	  <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 	  <LocationMarker user = {user} setUpdate={setUpdate}/>
-		    <UserImages user = {user} update={update}/>
+		    <UserImages user = {user} update={update} setBounds={setBounds}/>
 </MapContainer>
 	  </div>
                 </div>
