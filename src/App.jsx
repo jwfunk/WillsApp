@@ -105,7 +105,6 @@ function UserImages({user,update,setBounds}){
 			var bot = result.items[0].path.split('/')[2];
 			var r = result.items[0].path.split('/')[3];
 			var l  = result.items[0].path.split('/')[3];
-			console.log(result.items)
 			for(let i = 1;i < result.items.length; i++){
 				if(result.items[i].path.split('/')[2] > top){
 					top = result.items[i].path.split('/')[2]
@@ -120,7 +119,7 @@ function UserImages({user,update,setBounds}){
 					l = result.items[i].path.split('/')[3]
 				}
 			}
-				setBounds([[top,r],[bot,l]])
+			setBounds([[top,r],[bot,l]])
 		}
 	        setData(result)
 	}
@@ -131,40 +130,17 @@ function UserImages({user,update,setBounds}){
 	return data === null ? null : (<div>{data.items.map(a => (<Marker position={[a.path.split('/')[2],a.path.split('/')[3]]}><Popup><div style={{width:"300px"}}><Link path={a.path} u = {(searchParams.get("user") == null)}/></div></Popup></Marker>))}</div>)
 }
 import axios from "axios";
-const Center = () => {
-  const [position, setPosition] = useState({
-    lat: 42.,
-    lng: -90,
-  });
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        setPosition({ lat: coords.latitude, lng: coords.longitude });
-      },
-      (blocked) => {
-        if (blocked) {
-          const fetch = async () => {
-            try {
-              const { data } = await axios.get("https://ipapi.co/json");
-              setPosition({ lat: data.latitude, lng: data.longitude });
-            } catch (err) {
-              console.error(err);
-            }
-          };
-          fetch();
-        }
-      }
-    );
-  }, []);
-  return { position };
-};
+
 function App() {
 	const [map,setMap] = useState(null)
 	const [bounds,setBounds] = useState(null)
 	const[update,setUpdate] = useState(null);	
 	const [searchParams, setSearchParams] = useSearchParams();
 	Amplify.configure(config);
-	const { position } = Center();
+	  const [position, setPosition] = useState({
+    lat: 42.,
+    lng: -90,
+  });
 	useEffect(() => {if(map != null){map.fitBounds(bounds)}},[bounds])
 	if(searchParams.get("user") == null){
   return (
@@ -178,7 +154,7 @@ function App() {
                     
 		    </Menu>
 	  <div style={{width: "100vw", height: "100vh"}}>
-	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={5} scrollWheelZoom={true} ref={setMap}>
+	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={13} scrollWheelZoom={true} ref={setMap}>
 	  <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
@@ -196,12 +172,12 @@ function App() {
 	return(
                 <div>
 	  <div style={{width: "100vw", height: "100vh"}}>
-	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={13} scrollWheelZoom={true}>
+	<MapContainer style={{height: "100vh", width: "100vw"}}center={position} zoom={13} scrollWheelZoom={true}ref={setMap}>
 	  <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 	  <LocationMarker user = {user} setUpdate={setUpdate}/>
-		    <UserImages user = {user} update={update}/>
+		    <UserImages user = {user} update={update} setBounds={setBounds}/>
 </MapContainer>
 	  </div>
                 </div>
