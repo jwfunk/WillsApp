@@ -1,0 +1,14 @@
+{
+  "resourceName": "YTLinks",
+  "tableName": "YTLinks",
+  "partitionKey": {
+    "fieldName": "url",
+    "fieldType": "string"
+  },
+  "sortKey": {
+    "fieldName": "user",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

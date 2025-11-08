@@ -16,10 +16,17 @@
         "willsappe1c8d524": {}
       },
       "storage": {
-        "media": {}
+        "media": {},
+        "YTLinks": {}
+      },
+      "function": {
+        "YTLink": {
+          "deploymentBucketName": "amplify-willsapp-dev-c8a09-deployment",
+          "s3Key": "amplify-builds/YTLink-636d452b2b2b52517076-build.zip"
+        }
       },
       "api": {
-        "willsapp": {}
+        "YTLink": {}
       }
     }
   }

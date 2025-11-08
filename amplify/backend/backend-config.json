@@ -1,20 +1,18 @@
 {
   "api": {
-    "willsapp": {
-      "dependsOn": [],
-      "output": {
-        "authConfig": {
-          "additionalAuthenticationProviders": [],
-          "defaultAuthentication": {
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 7
-            },
-            "authenticationType": "API_KEY"
-          }
+    "YTLink": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "YTLink"
         }
-      },
+      ],
       "providerPlugin": "awscloudformation",
-      "service": "AppSync"
+      "service": "API Gateway"
     }
   },
   "auth": {
@@ -45,7 +43,50 @@
       "service": "Cognito"
     }
   },
+  "function": {
+    "YTLink": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributeEnvMap": {
+            "Arn": "TABLE_ARN",
+            "Name": "TABLE_NAME"
+          },
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "storage",
+          "resourceName": "YTLinks"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_YTLink_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "YTLink"
+        }
+      ]
+    },
+    "AMPLIFY_function_YTLink_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "YTLink"
+        }
+      ]
+    }
+  },
   "storage": {
+    "YTLinks": {
+      "providerPlugin": "awscloudformation",
+      "service": "DynamoDB"
+    },
     "media": {
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
