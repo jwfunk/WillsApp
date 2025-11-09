@@ -178,8 +178,12 @@ function UserVideos({user,update,setUpdate}){
 		if(videos == null){getVideos(user.username,setVideos);}
 		else{
 		console.log(videos)}},[videos,update])
-	return videos === null ? null : (<div>{videos.map(a => (<Marker icon={redIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}><button onClick={() => {deleteLink(a.url,user.username,setUpdate)}}/><YouTube opts={{width:"100%"}} videoId={a.url}/></div></Popup></Marker>))}</div>)	
-	
+	if(user.username != 'none'){
+	return videos === null ? null : (<div>{videos.map(a => (<Marker icon={redIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}><button onClick={() => {deleteLink(a.url,user.username,setUpdate)}}>Remove</button><YouTube opts={{width:"100%"}} videoId={a.url}/></div></Popup></Marker>))}</div>)	
+	}else{
+
+	return videos === null ? null : (<div>{videos.map(a => (<Marker icon={redIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}><YouTube opts={{width:"100%"}} videoId={a.url}/></div></Popup></Marker>))}</div>)	
+	}
 }
 function UserImages({user,update,setBounds,setUpdate}){
 	const [data, setData] = useState(null);
