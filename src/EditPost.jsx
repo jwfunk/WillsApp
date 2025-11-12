@@ -7,26 +7,29 @@ import { Authenticator,Menu,MenuItem } from '@aws-amplify/ui-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css'
 import {uploadData} from "@aws-amplify/storage";
-import { getCurrentUser } from 'aws-amplify/auth';
-function uploadFile(content,user) {
+import { fetchAuthSession } from 'aws-amplify/auth'
+function uploadFile(content,id) {
 	const blob = new Blob([content],{type: "text/plain"})
-	console.log(user)
-	const u = async () => { 
-		try{const data = await getCurrentUser()
-		console.log(data)}
-		catch (e){
-		
-		}
-	}
-	uploadData({
-		path:'protected/' + user + '/' + 'post.html',
-		data: blob
-	})
+	send(blob,id)
 	const url = URL.createObjectURL(blob)
 	const link = document.createElement("a");
   link.download = "user-info.json";
   link.href = url;
-  link.click();
+  //link.click();
+}
+
+const send = async (blob,id) => {
+try{
+	const session = await fetchAuthSession()
+	console.log(session.identityId)
+	uploadData({
+		path:'protected/' + session.identityId + '/' + id + '/' + 'post.html',
+		data: blob
+	})
+}
+catch(e){
+
+}
 }
 
 function EditPost(){
@@ -50,7 +53,7 @@ if(post == null){return null}
 			<>
 			<ReactQuill theme="snow" value={content} onChange={handleContentChange}/>
 			<div dangerouslySetInnerHTML = {{__html: content}}/>
-			<button onClick={() => (uploadFile(content,user))}/>
+			<button onClick={() => (uploadFile(content,id))}/>
 			</>
 		) : (<Navigate to={'/post/' + id}/>))}
 		</Authenticator>
