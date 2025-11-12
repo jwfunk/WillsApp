@@ -1,5 +1,19 @@
 {
   "api": {
+    "Posts": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "Post"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "YTLink": {
       "dependsOn": [
         {
@@ -44,6 +58,25 @@
     }
   },
   "function": {
+    "Post": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributeEnvMap": {
+            "Arn": "TABLE_ARN",
+            "Name": "TABLE_NAME"
+          },
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "storage",
+          "resourceName": "Posts"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "YTLink": {
       "build": true,
       "dependsOn": [
@@ -65,6 +98,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_Post_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "Post"
+        }
+      ]
+    },
+    "AMPLIFY_function_Post_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "Post"
+        }
+      ]
+    },
     "AMPLIFY_function_YTLink_deploymentBucketName": {
       "usedBy": [
         {
@@ -83,6 +132,10 @@
     }
   },
   "storage": {
+    "Posts": {
+      "providerPlugin": "awscloudformation",
+      "service": "DynamoDB"
+    },
     "YTLinks": {
       "providerPlugin": "awscloudformation",
       "service": "DynamoDB"

@@ -30,12 +30,21 @@
     {
       "tableName": "YTLinks-dev",
       "region": "us-east-2"
+    },
+    {
+      "tableName": "Posts-dev",
+      "region": "us-east-2"
     }
   ],
   "aws_cloud_logic_custom": [
     {
       "name": "YTLink",
-      "endpoint": "https://yyae3aymj0.execute-api.us-east-2.amazonaws.com/dev",
+      "endpoint": "https://f3sz5glw83.execute-api.us-east-2.amazonaws.com/dev",
+      "region": "us-east-2"
+    },
+    {
+      "name": "Posts",
+      "endpoint": "https://rkfv2ic5b0.execute-api.us-east-2.amazonaws.com/dev",
       "region": "us-east-2"
     }
   ]

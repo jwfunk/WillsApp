@@ -17,16 +17,22 @@
       },
       "storage": {
         "media": {},
-        "YTLinks": {}
+        "YTLinks": {},
+        "Posts": {}
       },
       "function": {
         "YTLink": {
           "deploymentBucketName": "amplify-willsapp-dev-c8a09-deployment",
-          "s3Key": "amplify-builds/YTLink-636d452b2b2b52517076-build.zip"
+          "s3Key": "amplify-builds/YTLink-6e3645644f6f65313952-build.zip"
+        },
+        "Post": {
+          "deploymentBucketName": "amplify-willsapp-dev-c8a09-deployment",
+          "s3Key": "amplify-builds/Post-46346e4a51523366534d-build.zip"
         }
       },
       "api": {
-        "YTLink": {}
+        "YTLink": {},
+        "Posts": {}
       }
     }
   }

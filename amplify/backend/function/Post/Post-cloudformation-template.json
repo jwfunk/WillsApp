@@ -16,13 +16,13 @@
     "s3Key": {
       "Type": "String"
     },
-    "storageYTLinksName": {
+    "storagePostsName": {
       "Type": "String",
-      "Default": "storageYTLinksName"
+      "Default": "storagePostsName"
     },
-    "storageYTLinksArn": {
+    "storagePostsArn": {
       "Type": "String",
-      "Default": "storageYTLinksArn"
+      "Default": "storagePostsArn"
     }
   },
   "Conditions": {
@@ -55,12 +55,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "YTLink",
+            "Post",
             {
               "Fn::Join": [
                 "",
                 [
-                  "YTLink",
+                  "Post",
                   "-",
                   {
                     "Ref": "env"
@@ -97,12 +97,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "willsappLambdaRole5963b51f",
+            "willsappLambdaRoleb524fe7d",
             {
               "Fn::Join": [
                 "",
                 [
-                  "willsappLambdaRole5963b51f",
+                  "willsappLambdaRoleb524fe7d",
                   "-",
                   {
                     "Ref": "env"
@@ -182,14 +182,14 @@
               ],
               "Resource": [
                 {
-                  "Ref": "storageYTLinksArn"
+                  "Ref": "storagePostsArn"
                 },
                 {
                   "Fn::Join": [
                     "/",
                     [
                       {
-                        "Ref": "storageYTLinksArn"
+                        "Ref": "storagePostsArn"
                       },
                       "index/*"
                     ]
