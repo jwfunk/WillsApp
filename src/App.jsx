@@ -17,12 +17,11 @@ const getUserID = async (setID) => {
         const session = await fetchAuthSession()
         setID(session.identityId)
 }
-function OpenMarker({user,position,setUpdate}) {
+function OpenMarker({id,position,setUpdate}) {
 	/**
  * @type {import('aws-amplify/data').Client<import('../amplify/data/resource').Schema>}
  */
 	const markerRef = useRef(null);
-	const [id, setID] = useState(null);
 	const [upload,setUpload] = useState(null);
 
 	const processFile = ({ file, key }) => {
@@ -37,9 +36,6 @@ function OpenMarker({user,position,setUpdate}) {
 };
 useEffect(() => {
 	if(searchParams.get("user") == null){
-	if(id == null){
-		getUserID(setID)
-	}
 	if (position != null && upload == position){
 	    markerRef.current.closePopup();
 	}
@@ -70,7 +66,7 @@ else{
 	return null
 }
 }
-function LocationMarker({user,setUpdate}) {
+function LocationMarker({id,setUpdate}) {
   const [position, setPosition] = useState(null)
   const map = useMapEvents({
     click(e) {
@@ -79,12 +75,13 @@ function LocationMarker({user,setUpdate}) {
     },
   })
   return position === null ? null : (
-    <OpenMarker position = {position} user = {user} setUpdate={setUpdate}>
+    <OpenMarker position = {position} id = {id} setUpdate={setUpdate}>
     </OpenMarker>
   )
 }
 
 function App() {
+	const [id, setID] = useState(null);
 	const [map,setMap] = useState(null)
 	const [bounds,setBounds] = useState(null)
 	const[update,setUpdate] = useState(null);	
@@ -94,7 +91,12 @@ function App() {
     lat: 42.,
     lng: -90,
   });
-	useEffect(() => {if(map != null){map.fitBounds(bounds)}},[bounds])
+	useEffect(() => {
+
+	if(id == null){
+		getUserID(setID)
+	}
+		if(map != null){map.fitBounds(bounds)}},[bounds])
 	if(searchParams.get("user") == null){
   return (
 	  <>
@@ -103,7 +105,7 @@ function App() {
                 <div>
 		    <Menu menuAlign="end" size="Large">
 		    <MenuItem><button onClick={signOut}>Sign out</button></MenuItem>
-		    <MenuItem><button onClick={() => {navigator.clipboard.writeText(window.location.href + '?user=' + user.username)}}>Copy Share Link</button></MenuItem>
+		    <MenuItem><button onClick={() => {navigator.clipboard.writeText(window.location.href + '?user=' + id)}}>Copy Share Link</button></MenuItem>
                     
 		    </Menu>
 	  <div style={{width: "100vw", height: "100vh"}}>
@@ -111,7 +113,7 @@ function App() {
 	  <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-	  <LocationMarker user = {user} setUpdate={setUpdate}/>
+	  <LocationMarker id = {id} setUpdate={setUpdate}/>
 		    <UserImages user = {user} update={update} setBounds={setBounds} setUpdate={setUpdate}/>
 		    <UserVideos user = {user} update={update} setUpdate={setUpdate}/>
 		    <UserPosts user = {user} update={update} setUpdate={setUpdate}/>
