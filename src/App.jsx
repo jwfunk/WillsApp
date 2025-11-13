@@ -12,12 +12,17 @@ import L from 'leaflet';
 import {UserVideos,deleteLink,postLink,getVideos} from './Videos.jsx'
 import {UserPosts,deletePost,postPost,getPosts} from './Posts.jsx'
 import {Link,Remove,UserImages} from './Images.jsx'
-
+import { fetchAuthSession } from 'aws-amplify/auth'
+const getUserID = async (setID) => {
+        const session = await fetchAuthSession()
+        setID(session.identityId)
+}
 function OpenMarker({user,position,setUpdate}) {
 	/**
  * @type {import('aws-amplify/data').Client<import('../amplify/data/resource').Schema>}
  */
 	const markerRef = useRef(null);
+	const [id, setID] = useState(null);
 	const [upload,setUpload] = useState(null);
 
 	const processFile = ({ file, key }) => {
@@ -32,6 +37,9 @@ function OpenMarker({user,position,setUpdate}) {
 };
 useEffect(() => {
 	if(searchParams.get("user") == null){
+	if(id == null){
+		getUserID(setID)
+	}
 	if (position != null && upload == position){
 	    markerRef.current.closePopup();
 	}
@@ -48,7 +56,7 @@ return (
 	<input ref={inputRef} /><button onClick={() => {postLink(inputRef.current.value.split('?v=')[1],position.lat,position.lng,user.username,setUpdate)}}>Add Video</button><button onClick={() => {postPost(user.username + position.lat + position.lng,position.lat,position.lng,user.username,setUpdate)}}>Add Post</button>
 	  <FileUploader onUploadSuccess = {setUpdate}
       acceptedFileTypes={['image/*']}
-      path={'public/' + user.username + '/' + position.lat + '/' + position.lng + '/'}
+      path={'protected/' + id + '/images/' + position.lat + '/' + position.lng + '/'}
       maxFileCount={1}
       isResumable
       processFile={processFile}
