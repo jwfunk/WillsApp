@@ -17,7 +17,7 @@ const getUserID = async (setID) => {
         const session = await fetchAuthSession()
         setID(session.identityId)
 }
-function OpenMarker({id,position,setUpdate}) {
+function OpenMarker({username, id,position,setUpdate}) {
 	/**
  * @type {import('aws-amplify/data').Client<import('../amplify/data/resource').Schema>}
  */
@@ -49,7 +49,7 @@ if(searchParams.get("user") == null){
 return (
     <Marker position={position} ref={markerRef}>
       <Popup>
-	<input ref={inputRef} /><button onClick={() => {postLink(inputRef.current.value.split('?v=')[1],position.lat,position.lng,user.username,setUpdate)}}>Add Video</button><button onClick={() => {postPost(user.username + position.lat + position.lng,position.lat,position.lng,user.username,setUpdate)}}>Add Post</button>
+	<input ref={inputRef} /><button onClick={() => {postLink(inputRef.current.value.split('?v=')[1],position.lat,position.lng,id,setUpdate)}}>Add Video</button><button onClick={() => {postPost(id + position.lat + position.lng,position.lat,position.lng,id,setUpdate,username)}}>Add Post</button>
 	  <FileUploader onUploadSuccess = {setUpdate}
       acceptedFileTypes={['image/*']}
       path={'protected/' + id + '/images/' + position.lat + '/' + position.lng + '/'}
@@ -66,7 +66,7 @@ else{
 	return null
 }
 }
-function LocationMarker({id,setUpdate}) {
+function LocationMarker({username,id,setUpdate}) {
   const [position, setPosition] = useState(null)
   const map = useMapEvents({
     click(e) {
@@ -75,7 +75,7 @@ function LocationMarker({id,setUpdate}) {
     },
   })
   return position === null ? null : (
-    <OpenMarker position = {position} id = {id} setUpdate={setUpdate}>
+    <OpenMarker username = {username} position = {position} id = {id} setUpdate={setUpdate}>
     </OpenMarker>
   )
 }
@@ -113,10 +113,10 @@ function App() {
 	  <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-	  <LocationMarker id = {id} setUpdate={setUpdate}/>
-		    <UserImages user = {user} update={update} setBounds={setBounds} setUpdate={setUpdate}/>
-		    <UserVideos user = {user} update={update} setUpdate={setUpdate}/>
-		    <UserPosts user = {user} update={update} setUpdate={setUpdate}/>
+	  <LocationMarker username={user.username} id = {id} setUpdate={setUpdate}/>
+		    <UserImages user = {id} update={update} setBounds={setBounds} setUpdate={setUpdate}/>
+		    <UserVideos user = {id} update={update} setUpdate={setUpdate}/>
+		    <UserPosts user = {id} update={update} setUpdate={setUpdate}/>
 </MapContainer>
 	  </div>
                 </div>
@@ -133,8 +133,8 @@ function App() {
 	  <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-		    <UserImages user = {user} update={update} setBounds={setBounds} setUpdate={setUpdate}/>
-		    <UserVideos user = {user} update={update} setUpdate={setUpdate}/>
+		    <UserImages user = {id} update={update} setBounds={setBounds} setUpdate={setUpdate}/>
+		    <UserVideos user = {id} update={update} setUpdate={setUpdate}/>
 </MapContainer>
 	  </div>
                 </div>

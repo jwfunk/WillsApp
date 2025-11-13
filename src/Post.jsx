@@ -10,7 +10,7 @@ const {id} = useParams()
 	useEffect(() => {
 getPost(setPost,id)},[])
 if(post == null){return null}
-	else return(<p>{post[0].id.toString()}</p>)
+	else return(<p>{post.id}</p>)
 }
 
 export default Post

@@ -7,20 +7,19 @@ import YouTube from 'react-youtube';
 const redIcon = new L.Icon({                                                                     iconUrl: 'marker-icon-red.png',                                                              iconRetinaUrl: 'marker-icon-2x-red.png',                                                     iconAnchor: [12,41],                                                                         popupAnchor: [1,-34],                                                                        shadowUrl: 'marker-shadow.png',                                                              shadowSize: [41,41],                                                                         iconSize: [25,41],                                                                       });
 
 export function UserVideos({user,update,setUpdate}){
-        const path = 'public/' + user.username + '/'
         const [videos, setVideos] = useState(null);
         const [searchParams, setSearchParams] = useSearchParams();
 
         useEffect(() => {
-                if(update != null){
+                if(update != null  && user != null){
                         console.log(update)
-                        getVideos(user.username,setVideos);
+                        getVideos(user,setVideos);
                         setUpdate(null)
                 }
-                if(videos == null){getVideos(user.username,setVideos);}
+                if(videos == null && user != null){getVideos(user,setVideos);}
                 else{
-                console.log(videos)}},[videos,update])
-        if(user.username != 'none'){
+                console.log(videos)}},[videos,update,user])
+        if(user != 'none'){
         return videos === null ? null : (<div>{videos.map(a => (<Marker icon={redIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}><button onClick={() => {deleteLink(a.url,user.username,setUpdate)}}>Remove</button><YouTube opts={{width:"100%"}} videoId={a.url}/></div></Popup></Marker>))}</div>)
         }else{
                                                                                                      return videos === null ? null : (<div>{videos.map(a => (<Marker icon={redIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}><YouTube opts={{width:"100%"}} videoId={a.url}/></div></Popup></Marker>))}</div>)

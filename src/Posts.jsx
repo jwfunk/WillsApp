@@ -13,14 +13,14 @@ export function UserPosts({user,update,setUpdate}){
         useEffect(() => {
                 if(update != null){
                         console.log(update)
-                        getPosts(user.username,setPosts);
+                        getPosts(user,setPosts);
                         setUpdate(null)
                 }
-                if(posts == null){getPosts(user.username,setPosts);}
+                if(posts == null){getPosts(user,setPosts);}
                 else{
-                console.log(posts)}},[posts,update])
-        if(user.username != 'none'){
-        return posts === null ? null : (<div>{posts.map(a => (<Marker icon={yellowIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}><Link to={'/post/edit/' + user.username + '/' + a.id}>Post</Link><button onClick={() => {deletePost(a.id,user.username,setUpdate)}}>Remove</button></div></Popup></Marker>))}</div>)
+                console.log(posts)}},[user,posts,update])
+        if(user != 'none'){
+        return posts === null ? null : (<div>{posts.map(a => (<Marker icon={yellowIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}><Link to={'/post/edit/' + user + '/' + a.id}>Post</Link><button onClick={() => {deletePost(a.id,user,setUpdate)}}>Remove</button></div></Popup></Marker>))}</div>)
         }else{
                                                                                                      return posts === null ? null : (<div>{videos.map(a => (<Marker icon={yellowIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}></div></Popup></Marker>))}</div>)
         }
@@ -58,9 +58,18 @@ export async function getPost(setPost,user,id){
     console.log('GET call failed: ', e);
 }
 }
-export async function postPost(id,lat,lon,username,setUpdate) {                                      try {                                                                                          const restOperation = post({                                                                   apiName: 'Posts',                                                                           path: '/post',                                                                             options: {                                                                                     body: {                                                                                        id: id.toString().replace('.','').replace('.',''),                                                           lat: lat,
-	   lon: lon,                                                                                    user: username,
-              published: false
+export async function postPost(id,lat,lon,user,setUpdate,username) {                                      try {
+	const restOperation = post({                                                                   
+		apiName: 'Posts',                                                                           
+		path: '/post',                                                                             
+		options: {                                                                                     
+			body: {                                             
+				id: id.toString().replace('.','').replace('.',''),     
+				lat: lat,
+				lon: lon,                                          
+				user: user,
+				published: false,
+				username: username
            }                                                                                          }                                                                                          });                                                                                      
     const { body } = await restOperation.response;
     const response = await body.json();
@@ -77,7 +86,7 @@ export async function deletePost(id,user,setUpdate) {
   try {
     const restOperation = del({
       apiName: 'Posts',
-      path: '/post/object/' + id + '/' + user,
+      path: '/post/object/' + user + '/' + id,
     });
     const response = await restOperation.response;
     console.log('DELETE call succeeded');

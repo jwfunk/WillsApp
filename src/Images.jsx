@@ -3,11 +3,6 @@ import {  useSearchParams } from "react-router-dom";
 import { getUrl, list, remove } from 'aws-amplify/storage';
 import {  Marker, Popup } from 'react-leaflet'
 import { StorageImage } from '@aws-amplify/ui-react-storage';
-import { fetchAuthSession } from 'aws-amplify/auth'
-const getUserID = async (setID) => {
-	const session = await fetchAuthSession()
-	setID(session.identityId)
-}
 
 export function Link({path,u,setUpdate}){
         const [l, setL] = useState(null);
@@ -32,8 +27,7 @@ export async function Remove(path,setUpdate){
 }
 export function UserImages({user,update,setBounds,setUpdate}){
         const [data, setData] = useState(null);
-        const [id, setID] = useState(null);
-        const path = 'protected/' + id + '/images/'
+        const path = 'protected/' + user + '/images/'
         const [searchParams, setSearchParams] = useSearchParams();
         const url = 'https://willsapp9f2fe81319484cdd95064882e08262c2c8a09-dev.s3.us-east-2.amazonaws.com/'
         useEffect(() => {
@@ -71,12 +65,6 @@ export function UserImages({user,update,setBounds,setUpdate}){
         if(!data || update != null) {
         getData()
         }
-	if(searchParams.get("user") == null && id == null){
-		getUserID(setID)
-	}
-	if(id != null){
-		console.log(id)
-	}
-        },[update,id]);
+        },[update,user]);
         return data === null ? null : (<div>{data.map(a => (<Marker position={[a.path.split('/')[3],a.path.split('/')[4]]}><Popup><div style={{width:"300px"}}><Link path={a.path} u = {(searchParams.get("user") == null)} setUpdate={setUpdate}/></div></Popup></Marker>))}</div>)
 }

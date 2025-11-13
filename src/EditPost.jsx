@@ -49,7 +49,7 @@ if(post == null){return null}
 		return(
 		<>
 		<Authenticator> 
-		{({signOut,user}) => (user.username === post.user.toString() ? (
+		{({signOut,user}) => (user.username === post.username.toString() ? (
 			<>
 			<ReactQuill theme="snow" value={content} onChange={handleContentChange}/>
 			<div dangerouslySetInnerHTML = {{__html: content}}/>
