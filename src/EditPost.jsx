@@ -68,11 +68,12 @@ const {puser} = useParams()
 
 const modules = {
   toolbar: [
+	[{ 'header': [1, 2, 3, 4, 5, 6, false] },{ 'font': [] },{ 'align': [] }],
     ['bold', 'italic', 'underline','strike'],
     [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link', 'image'],[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-  [{ 'font': [] }],
-  [{ 'align': [] }],
+    ['link', 'image','video'],[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+  
+  
   ],
 	imageResize: {
 parchment: Quill.import('parchment'),
