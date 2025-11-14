@@ -16,13 +16,13 @@ export function UserPosts({user,update,setUpdate}){
                         getPosts(user,setPosts);
                         setUpdate(null)
                 }
-                if(posts == null){getPosts(user,setPosts);}
+                if(posts == null && user != null){getPosts(user,setPosts);}
                 else{
                 console.log(posts)}},[user,posts,update])
-        if(user != 'none'){
+        if(searchParams.get("user") == null){
         return posts === null ? null : (<div>{posts.map(a => (<Marker icon={yellowIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}><Link to={'/post/edit/' + user + '/' + a.id}>Post</Link><button onClick={() => {deletePost(a.id,user,setUpdate)}}>Remove</button></div></Popup></Marker>))}</div>)
         }else{
-                                                                                                     return posts === null ? null : (<div>{videos.map(a => (<Marker icon={yellowIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}></div></Popup></Marker>))}</div>)
+             return posts === null ? null : (<div>{posts.map(a => (<Link to={'/post/' + user + '/' + a.id}><Marker icon={yellowIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}>Post</div></Popup></Marker></Link>))}</div>)
         }
 }
 

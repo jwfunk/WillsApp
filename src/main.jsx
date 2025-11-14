@@ -10,7 +10,7 @@ createRoot(document.getElementById('root')).render(
 	<Router>
 	<Routes>
 	<Route path="/" element={<App/>}/>
-	<Route path="/post/:id" element={<Post/>}/>
+	<Route path="/post/:puser/:id" element={<Post/>}/>
 	<Route path="/post/edit/:puser/:id" element={<EditPost/>}/>
 	</Routes>
 	</Router>

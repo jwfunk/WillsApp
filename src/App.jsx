@@ -135,6 +135,7 @@ function App() {
             />
 		    <UserImages user = {id} update={update} setBounds={setBounds} setUpdate={setUpdate}/>
 		    <UserVideos user = {id} update={update} setUpdate={setUpdate}/>
+		    <UserPosts user = {id} update={update} setUpdate={setUpdate}/>
 </MapContainer>
 	  </div>
                 </div>
