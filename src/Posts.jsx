@@ -3,12 +3,21 @@ import { useState,useEffect } from 'react'
 import {  useSearchParams } from "react-router-dom";
 import {  Marker,Popup } from 'react-leaflet'
 import {Link} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
+
 
 const yellowIcon = new L.Icon({                                                                     iconUrl: 'marker-icon-gold.png',                                                              iconRetinaUrl: 'marker-icon-2x-gold.png',                                                     iconAnchor: [12,41],                                                                         popupAnchor: [1,-34],                                                                        shadowUrl: 'marker-shadow.png',                                                              shadowSize: [41,41],                                                                         iconSize: [25,41],                                                                       });
 
 export function UserPosts({user,update,setUpdate}){
         const [posts, setPosts] = useState(null);
         const [searchParams, setSearchParams] = useSearchParams();
+const navigate = useNavigate();
+
+  // Marker click handler
+  const handleMarkerClick = (user,a) => {
+    navigate('/post/' + user + '/' + a.id); // Internal route
+    // Or for external link: window.location.href = "https://example.com";
+  };
 
         useEffect(() => {
                 if(update != null){
@@ -22,7 +31,7 @@ export function UserPosts({user,update,setUpdate}){
         if(searchParams.get("user") == null){
         return posts === null ? null : (<div>{posts.map(a => (<Marker icon={yellowIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}><Link to={'/post/edit/' + user + '/' + a.id}>Post</Link><button onClick={() => {deletePost(a.id,user,setUpdate)}}>Remove</button></div></Popup></Marker>))}</div>)
         }else{
-             return posts === null ? null : (<div>{posts.map(a => (<Link to={'/post/' + user + '/' + a.id}><Marker icon={yellowIcon} position={[a.lat,a.lon]}><Popup maxWidth={500}><div style={{width:"500px"}}>Post</div></Popup></Marker></Link>))}</div>)
+             return posts === null ? null : (<div>{posts.map(a => (<Marker icon={yellowIcon} position={[a.lat,a.lon]} eventHandlers={{click: () => handleMarkerClick(user,a)}}></Marker>))}</div>)
         }
 }
 
