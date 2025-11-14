@@ -37,14 +37,14 @@ console.log(e)
 
 const loadPost = async (id,puser,setContent) => {
 try{
-	const downloadResult = await downloadData({
+	const downloadResult = await getUrl({
     path: "protected/" + puser + '/' + id + '/post.html'
-  }).result;
-  const text = await downloadResult.body.text();
-  setContent(text)
+  });
+	console.log(downloadResult)
+  fetch(downloadResult.url).then((res) => res.blob()).then((blob) => blob.text()).then((text) => (setContent(text)))
 }
 catch(e){
-
+console.log(e)
 }
 }
 
