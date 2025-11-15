@@ -11,17 +11,34 @@ import { fetchAuthSession } from 'aws-amplify/auth'
 import {getUrl, downloadData } from 'aws-amplify/storage';
 import ImageResize from 'quill-image-resize-module-react';
 
-const loadPost = async (id,puser,setContent) => {
+
+const genURL = async (url) => {
+const downloadResult = await getUrl({
+    path: url
+  });
+        const result = await downloadResult.url
+        return result
+}
+
+const loadPost = async (id,puser,setContent,value) => {
 try{
         const downloadResult = await getUrl({
     path: "protected/" + puser + '/' + id + '/post.html'
-  });
-        console.log(downloadResult)
-  fetch(downloadResult.url).then((res) => res.blob()).then((blob) => blob.text()).then((text) => (setContent(text)))
+  });                                                                                                                           console.log(downloadResult);                                                                                       fetch(downloadResult.url).then((res) => res.blob()).then((blob) => blob.text()).then((text) => {convertToReact(text,setContent)})
 }
 catch(e){
 console.log(e)
 }
+}
+
+
+function convertToReact(html,setContent){
+        let r = html
+        html.split('src="').forEach((u,i) => {
+                if(i != 0){
+         const path = decodeURIComponent('protected/' + u.split('"')[0].split('/protected/')[1].split('?')[0])
+        genURL(path).then((res) => {r = r.replace(u.split('"')[0],res.href);setContent(r)})
+                }})
 }
 
 function Post(){
@@ -33,7 +50,7 @@ const {puser} = useParams()
 
         useEffect(() => {
                 getPost(setPost,puser,id)
-                loadPost(id,puser,setContent)
+                loadPost(id,puser,setContent,content)
         },[])
 
 
