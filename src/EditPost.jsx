@@ -11,11 +11,11 @@ import {uploadData} from "@aws-amplify/storage";
 import { fetchAuthSession } from 'aws-amplify/auth'
 import {getUrl, downloadData } from 'aws-amplify/storage';
 import ImageResize from 'quill-image-resize-module-react';
-import { MDXEditor,Separator, BlockTypeSelect,BoldItalicUnderlineToggles,CodeToggle,CreateLink,HighlightToggle,InsertCodeBlock,InsertImage,imagePlugin,InsertTable,InsertThematicBreak,ListsToggle,UndoRedo, headingsPlugin, listsPlugin, quotePlugin, thematicBreakPlugin, toolbarPlugin } from '@mdxeditor/editor'
+import { MDXEditor, Separator, BlockTypeSelect,BoldItalicUnderlineToggles,CodeToggle,CreateLink,HighlightToggle,InsertCodeBlock,InsertImage,imagePlugin,InsertTable,InsertThematicBreak,ListsToggle,UndoRedo, headingsPlugin, listsPlugin, quotePlugin, thematicBreakPlugin, toolbarPlugin } from '@mdxeditor/editor'
+import {linkDialogPlugin, linkPlugin,tablePlugin } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css'
-function uploadFile(id,ref,setSource)  {
+function uploadFile(id,ref)  {
 	console.log(ref.current.getMarkdown())
-	setSource(ref.current.getMarkdown())
 	const blob = new Blob([ref.current.getMarkdown()],{type: "text/plain"})
 	send(blob,id)
 	const url = URL.createObjectURL(blob)
@@ -48,13 +48,13 @@ const downloadResult = await getUrl({
 	return result 
 }
 
-const loadPost = async (id,puser,ref,value) => {
+const loadPost = async (id,puser,setContent,value) => {
 try{
 	const downloadResult = await getUrl({
     path: "protected/" + puser + '/' + id + '/post.mkd'
   });
 	console.log(downloadResult)
-  fetch(downloadResult.url).then((res) => res.blob()).then((blob) => blob.text()).then((text) => {ref.current.setMarkdown(text);convertToReact(text,ref)})
+  fetch(downloadResult.url).then((res) => res.blob()).then((blob) => blob.text()).then((text) => {setContent(text);convertToReact(text,setContent)})
 }
 catch(e){
 console.log(e)
@@ -68,89 +68,60 @@ function convertToReact(html,ref){
 	html.split('src="').forEach((u,i) => {
 		if(i != 0){
 	 const path = decodeURIComponent('protected/' + u.split('"')[0].split('/protected/')[1].split('?')[0])
-	genURL(path).then((res) => {r = r.replace(u.split('"')[0],res.href);ref.current.setMarkdown(r);console.log(r)})
+	genURL(path).then((res) => {r = r.replace(u.split('"')[0],res.href);setContent(r);console.log(r)})
 		}})
 }
 
 function EditPost(){
-const handleImageUpload = () => {
-  const input = document.createElement('input');
-	input.setAttribute('type', 'file');
-  input.setAttribute('accept', 'image/*');
+async function imageUploadHandler(image){
 
-  input.addEventListener('change', async () => {
-    const file = input.files[0];
-    if (file) {
       const formData = new FormData();
-	    console.log(file)
-      formData.append('image', file);
+	    console.log(image)
+      formData.append('image', image);
 
       // Replace with your API endpoint
       const response = await uploadData( {
-	      path:"protected/" + puser + '/' + id + '/' + file.name,
-        data: file
+	      path:"protected/" + puser + '/' + id + '/' + image.name,
+        data: image
       }).result;
-	    console.log("protected/" + puser + '/' + id + '/' + file.name)
+	    console.log("protected/" + puser + '/' + id + '/' + image.name)
       const downloadResult = await getUrl({
-    path: "protected/" + puser + '/' + id + '/' + file.name
+    path: "protected/" + puser + '/' + id + '/' + image.name
   });
       console.log(downloadResult.url.href)
       const imageUrl = downloadResult.url.href;
-console.log(quill.current)
-      const range = quill.current.getEditor().getSelection();
-      quill.current.getEditor().insertEmbed(range.index, 'image', imageUrl);
-    }
-  });
-
-  input.click();
+	    return imageUrl
 };
 	Amplify.configure(config);
 const[post,setPost] = useState(null);
 const {id} = useParams()
 const {puser} = useParams()
-const quill = useRef(null)
-	const [content, setContent] = useState('');
+const [content, setContent] = useState('');
 	
-	useEffect(() => {
-	Quill.register('modules/imageResize', ImageResize);
-		getPost(setPost,puser,id)
-		loadPost(id,puser,ref,content)
-	},[])
+useEffect(() => {
+Quill.register('modules/imageResize', ImageResize);
+	getPost(setPost,puser,id)
+	loadPost(id,puser,setContent,content)
+},[])
 
-  const handleContentChange = (value) => {
-    setContent(value);
-  };
-
-
-const modules = {
-	toolbar: {container:[
-	[{ 'header': [1, 2, 3, 4, 5, 6, false] },{ 'font': [] },{ 'align': [] }],
-    ['bold', 'italic', 'underline','strike'],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link', 'image','video'],[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-  
-  
-  ],
-	handlers: {
-      image: handleImageUpload,
-    }},
-	imageResize: {
-parchment: Quill.import('parchment'),
-modules: ['Resize', 'DisplaySize']
-}
-};
 const ref = useRef(null)
-const[source,setSource] = useState('Test')
 const components = {
   em: props => <i {...props} />
 }
 const toolbar = toolbarPlugin({
-	toolbarClassName: 'editorToolbar',
 	toolbarContents: () => (
 		<>
 			<UndoRedo/>
 			<Separator/>
+			<BoldItalicUnderlineToggles/>
+			<HighlightToggle/>
+			<ListsToggle/>
+			<Separator/>
 			<BlockTypeSelect/>
+			<Separator/>
+			<InsertTable/>
+			<InsertImage/>
+			<CreateLink/>
 		</>
 	)
 })
@@ -162,9 +133,9 @@ if(post == null){return null}
 		{({signOut,user}) => (user.username === post.username.toString() ? (
 			<>
 			<div> 
-			<MDXEditor ref={ref} markdown="# Hello world" plugins={[toolbar,headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin()]} />
+			<MDXEditor contentEditableClassName="prose" ref={ref} markdown={content} plugins={[linkDialogPlugin(),tablePlugin(),linkPlugin(),toolbar,headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin(),imagePlugin({imageUploadHandler})]} />
 			</div>
-			<button onClick={() => (uploadFile(id,ref,setSource))}>Save Post</button>
+			<button onClick={() => (uploadFile(id,ref))}>Save Post</button>
 			</>
 		) : (<Navigate to={'/post/' + id}/>))}
 		</Authenticator>
