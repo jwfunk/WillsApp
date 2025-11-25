@@ -69,7 +69,6 @@ if(post == null){return null}
                         <div>
                         <MDXEditor readOnly={true} contentEditableClassName="prose" ref={ref} markdown={content} plugins={[linkDialogPlugin(),tablePlugin(),linkPlugin(),headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin(),imagePlugin()]} />
                         </div>
-                        <button onClick={() => (uploadFile(id,ref))}>Save Post</button>
                         </>
                 ) : (<Navigate to={'/post/' + id}/>))}
                 </Authenticator>
