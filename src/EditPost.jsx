@@ -62,13 +62,18 @@ console.log(e)
 }
 
 
-function convertToReact(html,ref){
+function convertToReact(html,setContent){
 	let r = html
 	console.log(html)
-	html.split('src="').forEach((u,i) => {
+	html.split('(https://willsapp').forEach((u,i) => {
 		if(i != 0){
-	 const path = decodeURIComponent('protected/' + u.split('"')[0].split('/protected/')[1].split('?')[0])
-	genURL(path).then((res) => {r = r.replace(u.split('"')[0],res.href);setContent(r);console.log(r)})
+	 const path = decodeURIComponent('protected/' + u.split('/protected/')[1].split('?')[0])
+	genURL(path).then((res) => {r = r.replace('https://willsapp' + u.split(')')[0],res.href);setContent(r);console.log(r)})
+		}})
+	html.split('src="https://willsapp').forEach((u,i) => {
+		if(i != 0){
+	 const path = decodeURIComponent('protected/' + u.split('/protected/')[1].split('?')[0])
+	genURL(path).then((res) => {r = r.replace('https://willsapp' + u.split('"')[0],res.href);setContent(r);console.log(r)})
 		}})
 }
 
